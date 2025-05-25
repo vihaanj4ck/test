@@ -1,10 +1,10 @@
-package java.model;
+package model;
 
 public class User {
-    private String userId;
-    private String name;
-    private String contact;
-    private String location;
+    private final String userId;
+    private final String name;
+    private final String contact;
+    private final String location;
 
     // Constructor
     public User(String userId, String name, String contact, String location) {

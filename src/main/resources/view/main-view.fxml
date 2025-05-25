@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.web.WebView?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            stylesheets="@view/styles.css"
-            fx:controller="controller.MainController">
+            fx:controller="controller.MainController"
+            stylesheets="@/styles.css">
 
     <!-- Top Toolbar with Search and Actions -->
     <top>
         <ToolBar styleClass="main-toolbar">
             <Button text="New Alert" onAction="#handleNewAlert">
                 <graphic>
-                    <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true"
-                               image="@/icons/floppydisk.webp"/>
+                    <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@icons/floppydisk.jpg"/>
+                        </image>
+                    </ImageView>
                 </graphic>
             </Button>
 
             <Button text="Refresh" onAction="#handleRefresh">
                 <graphic>
-                    <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true"
-                               image="@/icons/recircular arrow.webp"/>
+                    <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@icons/refresh.jpg"/>
+                        </image>
+                    </ImageView>
                 </graphic>
             </Button>
 
-            <Separator orientation="VERTICAL" />
+            <Separator orientation="VERTICAL"/>
 
-            <Label text="Search:" />
-            <TextField fx:id="searchField" promptText="Type to search..."
-                       onKeyReleased="#handleSearch" />
-
-            <ComboBox fx:id="severityFilter" promptText="Filter by severity"
-                      onAction="#handleFilterChange" />
+            <Label text="Search:"/>
+            <TextField fx:id="searchField" promptText="Type to search..." onKeyReleased="#handleSearch"/>
+            <ComboBox fx:id="severityFilter" promptText="Filter by severity" onAction="#handleFilterChange"/>
         </ToolBar>
     </top>
 
@@ -43,18 +48,18 @@
         <SplitPane dividerPositions="0.7" styleClass="main-split-pane">
             <!-- Left Pane - Map View -->
             <StackPane fx:id="mapContainer" styleClass="map-pane">
-                <WebView fx:id="mapView" />
-                <ProgressIndicator fx:id="mapLoadingIndicator" visible="false" />
+                <WebView fx:id="mapView"/>
+                <ProgressIndicator fx:id="mapLoadingIndicator" visible="false"/>
             </StackPane>
 
             <!-- Right Pane - Alerts List -->
             <VBox styleClass="alert-list-container" spacing="10">
-                <Label text="Recent Alerts" styleClass="section-header" />
+                <Label text="Recent Alerts" styleClass="section-header"/>
                 <ListView fx:id="alertListView" styleClass="alert-list-view" VBox.vgrow="ALWAYS"/>
                 <HBox styleClass="pagination-container" spacing="10">
-                    <Button text="Previous" onAction="#handlePreviousPage" />
-                    <Label fx:id="pageInfoLabel" />
-                    <Button text="Next" onAction="#handleNextPage" />
+                    <Button text="Previous" onAction="#handlePreviousPage"/>
+                    <Label fx:id="pageInfoLabel"/>
+                    <Button text="Next" onAction="#handleNextPage"/>
                 </HBox>
             </VBox>
         </SplitPane>
@@ -62,10 +67,13 @@
 
     <!-- Status Bar -->
     <bottom>
-        <HBox styleClass="status-bar" spacing="10" alignment="CENTER_LEFT" padding="5">
-            <Label fx:id="statusLabel" text="Ready" />
-            <ProgressBar fx:id="progressBar" progress="0" visible="false" prefWidth="150" />
-            <Label fx:id="lastUpdatedLabel" styleClass="timestamp" />
+        <HBox styleClass="status-bar" spacing="10" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="5" right="5" bottom="5" left="5"/>
+            </padding>
+            <Label fx:id="statusLabel" text="Ready"/>
+            <ProgressBar fx:id="progressBar" progress="0" visible="false" prefWidth="150"/>
+            <Label fx:id="lastUpdatedLabel" styleClass="timestamp"/>
         </HBox>
     </bottom>
 

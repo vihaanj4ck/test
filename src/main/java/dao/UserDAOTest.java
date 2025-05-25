@@ -1,6 +1,5 @@
-package test.java.dao;
+package dao;
 
-import dao.UserDAO;
 import model.User;
 
 import java.util.List;

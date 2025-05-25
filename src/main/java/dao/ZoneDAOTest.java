@@ -1,6 +1,5 @@
-package test.java.dao;
+package dao;
 
-import dao.ZoneDAO;
 import model.DisasterZone;
 
 public class ZoneDAOTest {

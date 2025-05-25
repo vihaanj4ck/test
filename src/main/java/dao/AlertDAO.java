@@ -1,4 +1,4 @@
-package java.dao;
+package dao;
 
 import utils.DBConnector;
 import model.Alert;
@@ -36,8 +36,7 @@ public class AlertDAO {
         }
     }
 
-    // Fixed return type to List<Alert>
-    public String getRecentAlerts(int limit) {
+    public List<Alert> getRecentAlerts(int limit) {
         List<Alert> alerts = new ArrayList<>();
         String sql = "SELECT * FROM alerts ORDER BY timestamp DESC LIMIT ?";
 
@@ -61,7 +60,7 @@ public class AlertDAO {
             System.err.println("❌ Error fetching alerts: " + e.getMessage());
             e.printStackTrace();
         }
-        return alerts.toString();
+        return alerts;
     }
 
     public void updateAlertSeverity(String alertId, String newSeverity) {
