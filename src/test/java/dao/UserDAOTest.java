@@ -1,6 +1,8 @@
-package dao;
+package test.java.dao;
 
+import dao.UserDAO;
 import model.User;
+
 import java.util.List;
 
 public class UserDAOTest {
@@ -10,7 +12,7 @@ public class UserDAOTest {
         // 1. Test User Registration
         System.out.println("=== Testing registerUser() ===");
         User newUser = new User("U101", "Rahul", "+919876543210", "Mumbai");
-        userDAO.registerUser(newUser);
+        userDAO.registerUser(newUser);  // Changed from getClass to registerUser
 
         // 2. Test Retrieving Users
         System.out.println("\n=== Testing getUsersByLocation() ===");

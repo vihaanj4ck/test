@@ -88,7 +88,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>main.java.controller.MainController</mainClass>
+                    <mainClass>controller.MainController</mainClass>
                     <executable>${java.home}/bin/java</executable>
                     <jvmArgs>
                         <jvmArg>--add-exports=javafx.graphics/com.sun.javafx.sg.prism=ALL-UNNAMED</jvmArg>

@@ -2,6 +2,7 @@ package dao;
 
 import model.DisasterZone;
 import utils.DBConnector;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class ZoneDAO {
         return zones;
     }
 
-    // UPDATE (Example: Update zone coordinates)
+    // UPDATE
     public void updateZoneCoordinates(String zoneId, String newCoordinates) {
         String sql = "UPDATE zones SET coordinates = ? WHERE zone_id = ?";
         try (Connection conn = DBConnector.getConnection();
