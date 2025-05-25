@@ -1,4 +1,4 @@
-package java.dao;
+package dao;
 
 import model.User;
 import utils.DBConnector;
