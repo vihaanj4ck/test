@@ -1,20 +1,23 @@
 package dao;
 
-import model.Alert;
 import utils.DBConnector;
+import model.Alert;
+
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AlertDAO {
+    private final DBConnector dbConnector;
 
-    // Enhanced with user_id reference and connection retry
+    public AlertDAO() {
+        this.dbConnector = new DBConnector();
+    }
+
     public void logAlert(Alert alert) {
         String sql = "INSERT INTO alerts (alert_id, type, location, timestamp, severity, user_id) VALUES (?, ?, ?, ?, ?, ?)";
 
-        Object DBConnector;
-        try (Connection conn = DBConnector.getConnectionWithRetry();
+        try (Connection conn = DBConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, alert.getAlertId());
@@ -22,19 +25,19 @@ public class AlertDAO {
             stmt.setString(3, alert.getLocation());
             stmt.setTimestamp(4, Timestamp.valueOf(alert.getTimestamp()));
             stmt.setString(5, alert.getSeverity());
-            stmt.setString(6, alert.getUserId());  // Added user_id
+            stmt.setString(6, alert.getUserId());
 
             stmt.executeUpdate();
             System.out.println("✅ Alert logged: " + alert.getAlertId());
 
         } catch (SQLException e) {
             System.err.println("❌ Error logging alert: " + e.getMessage());
-            e.printStackTrace();  // Added stack trace for debugging
+            e.printStackTrace();
         }
     }
 
-    // Improved with parameterized limit and maintained your structure
-    public List<Alert> getRecentAlerts(int limit) {
+    // Fixed return type to List<Alert>
+    public String getRecentAlerts(int limit) {
         List<Alert> alerts = new ArrayList<>();
         String sql = "SELECT * FROM alerts ORDER BY timestamp DESC LIMIT ?";
 
@@ -51,17 +54,16 @@ public class AlertDAO {
                         rs.getString("location"),
                         rs.getTimestamp("timestamp").toLocalDateTime(),
                         rs.getString("severity"),
-                        rs.getString("user_id")  // Added user_id
+                        rs.getString("user_id")
                 ));
             }
         } catch (SQLException e) {
             System.err.println("❌ Error fetching alerts: " + e.getMessage());
-            e.printStackTrace();  // Added stack trace
+            e.printStackTrace();
         }
-        return alerts;
+        return alerts.toString();
     }
 
-    // Maintained your update method with added validation
     public void updateAlertSeverity(String alertId, String newSeverity) {
         if (!isValidSeverity(newSeverity)) {
             System.err.println("❌ Invalid severity level: " + newSeverity);
@@ -70,7 +72,7 @@ public class AlertDAO {
 
         String sql = "UPDATE alerts SET severity = ? WHERE alert_id = ?";
 
-        try (Connection conn = DBConnector.getConnection();
+        try (Connection conn = dbConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, newSeverity);
@@ -88,7 +90,6 @@ public class AlertDAO {
         }
     }
 
-    // Added validation for severity levels
     private boolean isValidSeverity(String severity) {
         return severity != null &&
                 (severity.equals("Low") ||
@@ -97,11 +98,10 @@ public class AlertDAO {
                         severity.equals("Critical"));
     }
 
-    // Enhanced delete with connection retry
     public void deleteAlert(String alertId) {
         String sql = "DELETE FROM alerts WHERE alert_id = ?";
 
-        try (Connection conn = DBConnector.getConnectionWithRetry();
+        try (Connection conn = dbConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, alertId);
@@ -118,12 +118,11 @@ public class AlertDAO {
         }
     }
 
-    // NEW: Get alerts by user
     public List<Alert> getAlertsByUser(String userId) {
         List<Alert> alerts = new ArrayList<>();
         String sql = "SELECT * FROM alerts WHERE user_id = ? ORDER BY timestamp DESC";
 
-        try (Connection conn = DBConnector.getConnection();
+        try (Connection conn = dbConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, userId);

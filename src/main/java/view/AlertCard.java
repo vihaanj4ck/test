@@ -1,14 +1,14 @@
 package view;
 
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
 
-import java.awt.*;
+// Use your own Alert class, not javafx.scene.control.Alert
+import model.Alert; // Update this import based on your package
 
 public class AlertCard {
     private final ListView<Alert> alertList = new ListView<>();
@@ -25,18 +25,14 @@ public class AlertCard {
     }
 
     private void initializeUI() {
-        // Set up container layout
         container.setSpacing(10);
         container.setPadding(new Insets(10));
 
-        // Configure header
         headerLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        // Configure list view
         alertList.setPlaceholder(new Label("No active alerts"));
         alertList.setMinHeight(300);
 
-        // Add components to container
         container.getChildren().addAll(headerLabel, filterBar, alertList);
     }
 
@@ -54,7 +50,7 @@ public class AlertCard {
                             setGraphic(null);
                             setStyle("");
                         } else {
-                            createAlertCell(alert);
+                            createAlertCell(alert, this);
                         }
                     }
                 };
@@ -62,11 +58,10 @@ public class AlertCard {
         });
     }
 
-    private void createAlertCell(Alert alert) {
-        VBox container = new VBox(5);
-        container.setPadding(new Insets(8));
+    private void createAlertCell(Alert alert, ListCell<Alert> cell) {
+        VBox contentBox = new VBox(5);
+        contentBox.setPadding(new Insets(8));
 
-        // Title row
         HBox titleRow = new HBox(10);
         Label typeLabel = new Label(alert.getType());
         typeLabel.setStyle("-fx-font-weight: bold;");
@@ -76,41 +71,31 @@ public class AlertCard {
 
         titleRow.getChildren().addAll(typeLabel, severityLabel);
 
-        // Details row
         Label detailsLabel = new Label(
                 String.format("%s | %s", alert.getLocation(), alert.getTimestamp())
         );
         detailsLabel.setStyle("-fx-font-size: 0.9em; -fx-text-fill: #555;");
 
-        // Add to container
-        container.getChildren().addAll(titleRow, detailsLabel);
+        contentBox.getChildren().addAll(titleRow, detailsLabel);
 
-        // Set cell style
-        setStyle(getCellStyle(alert.getModality()));
-        setGraphic(container);
+        cell.setStyle(getCellStyle(alert.getModality()));
+        cell.setGraphic(contentBox);
     }
 
     private void configureFilters() {
-        // Set up severity filter
-        severityFilter.setItems(FXCollections.observableArrayList(
-                "All", "High", "Medium", "Low"
-        ));
+        severityFilter.setItems(FXCollections.observableArrayList("All", "High", "Medium", "Low"));
         severityFilter.setValue("All");
         severityFilter.setPromptText("Filter by severity");
 
-        // Set up search field
         searchField.setPromptText("Search alerts...");
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
-            // Implement search filtering
+            // Implement search logic here
         });
 
-        // Add to filter bar
         filterBar.setSpacing(10);
         filterBar.getChildren().addAll(
-                new Label("Filter:"),
-                severityFilter,
-                new Label("Search:"),
-                searchField
+                new Label("Filter:"), severityFilter,
+                new Label("Search:"), searchField
         );
     }
 

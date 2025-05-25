@@ -1,11 +1,11 @@
-package dao;
+package test.java.dao;
 
 import model.User;
 import java.util.List;
 
 public class UserDAOTest {
     public static void main(String[] args) {
-        UserDAO userDAO = new UserDAO();
+        main.java.dao.UserDAO userDAO = new main.java.dao.UserDAO();
 
         // 1. Test User Registration
         System.out.println("=== Testing registerUser() ===");
