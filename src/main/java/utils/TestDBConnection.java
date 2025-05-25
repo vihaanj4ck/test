@@ -1,6 +1,7 @@
 package utils;
 
 import java.sql.Connection;
+import java.utils.DBConnector;
 
 public class TestDBConnection {
     public static void main(String[] args) {

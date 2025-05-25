@@ -1,4 +1,4 @@
-package view;// ZoneMap.java
+package java.view;// ZoneMap.java
 import javafx.scene.web.WebView;
 import javafx.scene.layout.StackPane;
 

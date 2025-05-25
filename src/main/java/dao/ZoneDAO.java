@@ -1,4 +1,4 @@
-package dao;
+package java.dao;
 
 import model.DisasterZone;
 import utils.DBConnector;
