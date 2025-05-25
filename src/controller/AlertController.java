@@ -1,4 +1,3 @@
-package controller;
-
-public class AlertController {
-}
+scene.getStylesheets().add(
+        getClass().getResource("/styles.css").toExternalForm()
+);

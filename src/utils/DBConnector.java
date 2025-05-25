@@ -4,6 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static DBConnector.DB_URL;
+import static DBConnector.DB_URL;
+import static DBConnector.PASS;
+import static DBConnector.USER;
+
 public class DBConnector {
     // Database configuration
     private static final String DB_URL = "jdbc:mysql://localhost:3306/disaster_db";
@@ -70,4 +75,17 @@ public class DBConnector {
             System.err.println("❌ Test failed: " + e.getMessage());
         }
     }
+}
+public static Connection getConnection() throws SQLException, InterruptedException {
+    int retries = 3;
+    while (retries > 0) {
+        try {
+            return DriverManager.getConnection(DB_URL, USER, PASS);
+        } catch (SQLException e) {
+            retries--;
+            if (retries == 0) throw e;
+            Thread.sleep(1000); // Wait before retry
+        }
+    }
+    throw new SQLException("Failed to connect after retries");
 }

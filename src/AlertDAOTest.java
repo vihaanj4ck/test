@@ -4,6 +4,8 @@ import model.Alert;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
+
 public class AlertDAOTest {
     public static <AlertDAO, Alert> void main(String[] args) {
         AlertDAO alertDAO = new AlertDAO();
@@ -60,4 +62,14 @@ public class AlertDAOTest {
                 .orElse(null);
         System.out.println(deletedAlert == null ? "✅ Deletion verified" : "❌ Deletion failed");
     }
+}
+@Test
+public void testLogAlert() {
+    Alert alert = new Alert(...);
+    AlertDAO alertDAO;
+    alertDAO.logAlert(alert);
+    assertNotNull(alertDAO.getRecentAlerts(1).get(0));
+}
+
+void main() {
 }
