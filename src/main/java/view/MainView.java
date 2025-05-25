@@ -1,100 +1,58 @@
 package view;
 
-import javafx.scene.layout.*;
-import javafx.scene.control.*;
-import javafx.collections.FXCollections;
-import javafx.scene.control.ListView;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button; // Fixed: Using JavaFX Button
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import model.Alert; // Ensure this points to your Alert model class
 
-public class MainView {
-    private final BorderPane root = new BorderPane();
-    private final Button newAlertButton = new Button("New Alert");
-    private final Button refreshButton = new Button("Refresh");
-    private final ComboBox<String> filterCombo = new ComboBox<>();
-    private final SplitPane contentPane = new SplitPane();
-    private final ListView<String> alertListView = new ListView<>(); // Added ListView
-
+public class MainView extends BorderPane {
     public MainView() {
-        initializeUI();
-        setupEventHandlers();
-        applyStyles();
+        // 1. Create UI Components
+        Label header = new Label("Disaster Alert System");
+        header.getStyleClass().add("header");
+
+        Button newAlertBtn = new Button("New Alert"); // JavaFX Button
+        Button refreshBtn = new Button("Refresh");   // JavaFX Button
+
+        TableView<Alert> alertTable = createAlertTable();
+
+        // 2. Layout Organization
+        HBox toolbar = new HBox(10, newAlertBtn, refreshBtn);
+        toolbar.setPadding(new Insets(10)); // JavaFX Insets
+        toolbar.setAlignment(Pos.CENTER_LEFT);
+
+        VBox mainContainer = new VBox(20, header, toolbar, alertTable);
+        mainContainer.setPadding(new Insets(20)); // JavaFX Insets
+
+        // 3. Apply Styles
+        this.getStyleClass().add("main-pane");
+        this.setCenter(mainContainer);
+
+        // 4. Responsive Design
+        alertTable.prefHeightProperty().bind(this.heightProperty().multiply(0.8));
     }
 
-    private void initializeUI() {
-        configureToolbar();
-        configureContentPane();
-    }
+    private TableView<Alert> createAlertTable() {
+        TableView<Alert> table = new TableView<>();
 
-    private void configureToolbar() {
-        filterCombo.setItems(FXCollections.observableArrayList(
-                "All Alerts", "Critical", "Warning", "Info"
-        ));
-        filterCombo.setPromptText("Filter alerts...");
-        filterCombo.getSelectionModel().selectFirst();
+        TableColumn<Alert, String> idCol = new TableColumn<>("ID");
+        TableColumn<Alert, String> typeCol = new TableColumn<>("Type");
+        TableColumn<Alert, String> severityCol = new TableColumn<>("Severity");
 
-        newAlertButton.setId("new-alert-btn");
-        refreshButton.setId("refresh-btn");
-        filterCombo.setId("filter-combo");
+        // Configure columns (add cell value factories here)
+        idCol.setCellValueFactory(cellData -> cellData.getValue().alertIdProperty());
+        typeCol.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
+        severityCol.setCellValueFactory(cellData -> cellData.getValue().severityProperty());
 
-        ToolBar toolbar = new ToolBar();
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        table.getColumns().addAll(idCol, typeCol, severityCol);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        toolbar.getItems().addAll(
-                newAlertButton,
-                refreshButton,
-                spacer,
-                filterCombo
-        );
-
-        root.setTop(toolbar);
-    }
-
-    private void configureContentPane() {
-        contentPane.setDividerPositions(0.7);
-        contentPane.getItems().addAll(alertListView, new StackPane()); // Added ListView to content
-        root.setCenter(contentPane);
-    }
-
-    private void setupEventHandlers() {
-        newAlertButton.setOnAction(e -> handleNewAlert());
-        refreshButton.setOnAction(e -> handleRefresh());
-        filterCombo.setOnAction(e -> handleFilterChange());
-    }
-
-    private void applyStyles() {
-        try {
-            String cssPath = getClass().getResource("/styles.css").toExternalForm();
-            root.getStylesheets().add(cssPath);
-            root.getStyleClass().add("main-view");
-        } catch (NullPointerException e) {
-            System.err.println("Warning: Could not load styles.css");
-        }
-    }
-
-    // Event handlers
-    private void handleNewAlert() {
-        System.out.println("New Alert clicked");
-    }
-
-    private void handleRefresh() {
-        System.out.println("Refresh clicked");
-    }
-
-    private void handleFilterChange() {
-        String filter = filterCombo.getValue();
-        System.out.println("Filter changed to: " + filter);
-    }
-
-    public BorderPane getView() {
-        return root;
-    }
-
-    // Getters for controller access
-    public Button getNewAlertButton() {
-        return newAlertButton;
-    }
-
-    public ListView<String> getAlertList() {
-        return alertListView; // Fixed the return value
+        return table;
     }
 }
