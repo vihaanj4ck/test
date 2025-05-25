@@ -1,4 +1,4 @@
-package controller;
+package java.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;

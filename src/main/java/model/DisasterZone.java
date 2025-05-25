@@ -1,4 +1,4 @@
-package model;
+package java.model;
 
 public class DisasterZone {
     private final String zoneId;

@@ -1,4 +1,4 @@
-package dao;
+package java.dao;
 
 import utils.DBConnector;
 import model.Alert;

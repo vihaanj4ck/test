@@ -1,17 +1,21 @@
-package controller;  // Only one package declaration needed
+package java.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.event.ActionEvent;
 import dao.AlertDAO;
+
 import java.util.Objects;
 
 public class MainController {
+
     @FXML private BorderPane rootLayout;
     @FXML private StackPane mapContainer;
     @FXML private ListView<String> alertListView;
@@ -20,17 +24,40 @@ public class MainController {
 
     private final AlertDAO alertDAO = new AlertDAO();
 
+    // Icon images
+    private Image addIcon;
+    private Image refreshIcon;
+
     @FXML
     public void initialize() {
-        loadAlerts();
-        setupButtonActions();
+        loadIcons();            // 1. Load images
+        setupButtonIcons();     // 2. Attach to buttons
+        loadAlerts();           // 3. Load alert data
+        setupButtonActions();   // 4. Setup button click handlers
+    }
+
+    private void loadIcons() {
+        try {
+            addIcon = new Image(getClass().getResourceAsStream("/icons/floppydisk.webp"));
+            refreshIcon = new Image(getClass().getResourceAsStream("/icons/recircular arrow.webp"));
+        } catch (NullPointerException e) {
+            System.err.println("Error loading icons: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void setupButtonIcons() {
+        if (addIcon != null) {
+            newAlertButton.setGraphic(new ImageView(addIcon));
+        }
+        if (refreshIcon != null) {
+            refreshButton.setGraphic(new ImageView(refreshIcon));
+        }
     }
 
     private void loadAlerts() {
         try {
-            alertListView.getItems().setAll(
-                    alertDAO.getRecentAlerts(10)
-            );
+            alertListView.getItems().setAll(alertDAO.getRecentAlerts(10));
         } catch (Exception e) {
             System.err.println("Error loading alerts: " + e.getMessage());
             e.printStackTrace();
@@ -39,19 +66,8 @@ public class MainController {
 
     @FXML
     private void handleNewAlert(ActionEvent event) {
-        try {
-            // Implement your new alert logic here
-            System.out.println("New Alert button clicked");
-
-            // Example: Create a new alert and add to database
-            // Alert newAlert = new Alert(...);
-            // alertDAO.logAlert(newAlert);
-            // loadAlerts(); // Refresh the list
-
-        } catch (Exception e) {
-            System.err.println("Error creating new alert: " + e.getMessage());
-            e.printStackTrace();
-        }
+        System.out.println("New Alert button clicked");
+        // TODO: Implement actual alert creation
     }
 
     @FXML
@@ -69,7 +85,7 @@ public class MainController {
     private void applyStyles(Scene scene) {
         try {
             String cssPath = Objects.requireNonNull(
-                    getClass().getResource("/styles.css")  // Fixed path
+                    getClass().getResource("/styles.css")
             ).toExternalForm();
             scene.getStylesheets().add(cssPath);
         } catch (Exception e) {
@@ -82,15 +98,8 @@ public class MainController {
         refreshButton.setOnAction(this::handleRefresh);
     }
 
-    public void handleNextPage(ActionEvent actionEvent) {
-    }
-
-    public void handlePreviousPage(ActionEvent actionEvent) {
-    }
-
-    public void handleFilterChange(ActionEvent actionEvent) {
-    }
-
-    public void handleSearch(KeyEvent keyEvent) {
-    }
+    public void handleNextPage(ActionEvent actionEvent) {}
+    public void handlePreviousPage(ActionEvent actionEvent) {}
+    public void handleFilterChange(ActionEvent actionEvent) {}
+    public void handleSearch(KeyEvent keyEvent) {}
 }
