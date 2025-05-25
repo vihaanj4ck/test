@@ -1,0 +1,39 @@
+/* Root style and color palette */
+.root {
+    -fx-primary: #2a5caa;
+    -fx-secondary: #f0f0f0;
+    -fx-accent: #ff6b6b;
+    -fx-font-family: 'Segoe UI', Arial;
+}
+
+/* Main container */
+.main-pane {
+    -fx-background-color: linear-gradient(to bottom, #f5f7fa, #e4e8f0);
+    -fx-padding: 20;
+}
+
+/* Headers */
+.header {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary;
+    -fx-padding: 0 0 15px 0;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-background-radius: 4;
+}
+
+.button:hover {
+    -fx-background-color: derive(-fx-primary, 20%);
+}
+
+/* Alert severity colors */
+.critical { -fx-background-color: #ff4444; }
+.warning { -fx-background-color: #ffbb33; }
+.normal { -fx-background-color: #00C851; }
