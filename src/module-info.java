@@ -5,6 +5,7 @@ module JavaFx.Tutorial {
     requires java.sql;
     requires org.jetbrains.annotations;
     requires java.desktop;
+    requires org.junit.jupiter.api;
 
     exports xjaw;
     exports controller;
