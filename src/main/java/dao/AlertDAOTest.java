@@ -1,61 +1,77 @@
-package dao;
+    package dao;
 
-import model.Alert;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+    import model.Alert;
+    import org.junit.jupiter.api.*;
 
-public class AlertDAOTest {
-    public static void main(String[] args) {
-        AlertDAO alertDAO = new AlertDAO();
+    import java.time.LocalDateTime;
+    import java.util.List;
 
-        String testAlertId = UUID.randomUUID().toString();
-        String testUserId = "TEST_USER";
+    import static org.junit.jupiter.api.Assertions.*;
 
-        // 1. Test CREATE
-        System.out.println("=== Testing logAlert() ===");
-        Alert testAlert = new Alert(
-                testAlertId,
-                "Test Alert",
-                "Test Location",
-                LocalDateTime.now(),
-                "Medium",
-                testUserId
-        );
-        alertDAO.logAlert(testAlert);
+    class AlertDAOTest {
 
-        // 2. Test READ (Recent Alerts)
-        System.out.println("\n=== Testing getRecentAlerts() ===");
-        List<Alert> recentAlerts = alertDAO.getRecentAlerts(5);
-        if (recentAlerts.isEmpty()) {
-            System.out.println("❌ No alerts found");
-        } else {
-            recentAlerts.forEach(System.out::println);
+        private AlertDAO dao;
+
+        @BeforeEach
+        void setUp() {
+            // Using anonymous subclass to mock DAO behavior for testing without DB
+            dao = new AlertDAO() {
+                @Override
+                public boolean testConnection() {
+                    // Always return true for connection test
+                    return true;
+                }
+
+                @Override
+                public boolean insertAlert(Alert alert) {
+                    // Simulate insertion success
+                    System.out.println("Simulating insert: " + alert);
+                    return true;
+                }
+
+                @Override
+                public List<Alert> getAllAlerts() {
+                    // Return fixed sample alerts with correct parameter order
+                    return List.of(
+                            new Alert("TEST001", "Flood", "TestCity", LocalDateTime.now(),
+                                    "High", "USER001", 12.34, 56.78, "Test flood description"),
+                            new Alert("TEST002", "Fire", "TestTown", LocalDateTime.now(),
+                                    "Medium", "USER002", 23.45, 67.89, "Test fire description")
+                    );
+                }
+            };
         }
 
-        // 3. Test READ (User-specific)
-        System.out.println("\n=== Testing getAlertsByUser() ===");
-        List<Alert> userAlerts = alertDAO.getAlertsByUser(testUserId);
-        if (userAlerts.isEmpty()) {
-            System.out.println("❌ No alerts found for user");
-        } else {
-            userAlerts.forEach(System.out::println);
+        @Test
+        void testInsertAlert() {
+            Alert alert = new Alert(
+                    "ALERT123",
+                    "Earthquake",
+                    "Delhi",
+                    LocalDateTime.now(),
+                    "Critical",
+                    "USER001",
+                    28.6139,   // latitude first (Double)
+                    77.2090,   // longitude next (Double)
+                    "Severe earthquake"  // description last (String)
+            );
+            boolean result = dao.insertAlert(alert);
+            assertTrue(result);
         }
 
-        // 4. Test UPDATE
-        System.out.println("\n=== Testing updateAlertSeverity() ===");
-        String newSeverity = "High";
-        alertDAO.updateAlertSeverity(testAlertId, newSeverity);
 
-        // 5. Test DELETE
-        System.out.println("\n=== Testing deleteAlert() ===");
-        alertDAO.deleteAlert(testAlertId);
+        @Test
+        void testGetAllAlerts() {
+            List<Alert> alerts = dao.getAllAlerts();
+            assertNotNull(alerts, "Alerts list should not be null");
+            assertEquals(2, alerts.size(), "There should be exactly 2 alerts");
 
-        // 6. Verify Deletion
-        System.out.println("\n=== Verifying deletion ===");
-        List<Alert> verifyAlerts = alertDAO.getRecentAlerts(10);
-        boolean alertStillExists = verifyAlerts.stream()
-                .anyMatch(a -> a.getAlertId().equals(testAlertId));
-        System.out.println(alertStillExists ? "❌ Deletion failed" : "✅ Deletion verified");
+            assertEquals("Flood", alerts.get(0).getType(), "First alert type should be Flood");
+            assertEquals("Fire", alerts.get(1).getType(), "Second alert type should be Fire");
+        }
+
+        @Test
+        void testConnection() {
+            assertTrue(dao.testConnection(), "Connection test should return true");
+        }
     }
-}

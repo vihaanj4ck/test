@@ -15,7 +15,7 @@
     <!-- Top Toolbar with Search and Actions -->
     <top>
         <ToolBar styleClass="main-toolbar">
-            <Button text="New Alert" onAction="#handleNewAlert">
+            <Button fx:id="newAlertButton" text="New Alert" onAction="#handleNewAlert">
                 <graphic>
                     <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
                         <image>
@@ -25,7 +25,7 @@
                 </graphic>
             </Button>
 
-            <Button text="Refresh" onAction="#handleRefresh">
+            <Button fx:id="refreshButton" text="Refresh" onAction="#handleRefresh">
                 <graphic>
                     <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
                         <image>
@@ -38,8 +38,12 @@
             <Separator orientation="VERTICAL"/>
 
             <Label text="Search:"/>
-            <TextField fx:id="searchField" promptText="Type to search..." onKeyReleased="#handleSearch"/>
+            <TextField fx:id="searchField" promptText="Type to search..." onKeyReleased="#handleSearch" onAction="#handleSearch"/>
             <ComboBox fx:id="severityFilter" promptText="Filter by severity" onAction="#handleFilterChange"/>
+
+            <!-- New Description Field -->
+            <Label text="Description:"/>
+            <TextField fx:id="descriptionField" promptText="Enter alert description..."/>
         </ToolBar>
     </top>
 
@@ -49,32 +53,116 @@
             <!-- Left Pane - Map View -->
             <StackPane fx:id="mapContainer" styleClass="map-pane">
                 <WebView fx:id="mapView"/>
-                <ProgressIndicator fx:id="mapLoadingIndicator" visible="false"/>
+                <!-- Map Loading Indicator -->
+                <StackPane alignment="CENTER">
+                    <ProgressIndicator fx:id="mapLoadingIndicator" visible="true" prefWidth="50" prefHeight="50"/>
+                    <Label text="Loading Map..." style="-fx-text-fill: #666; -fx-font-size: 12px;" StackPane.alignment="BOTTOM_CENTER">
+                        <StackPane.margin>
+                            <Insets bottom="10"/>
+                        </StackPane.margin>
+                    </Label>
+                </StackPane>
             </StackPane>
 
             <!-- Right Pane - Alerts List -->
             <VBox styleClass="alert-list-container" spacing="10">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+
                 <Label text="Recent Alerts" styleClass="section-header"/>
                 <ListView fx:id="alertListView" styleClass="alert-list-view" VBox.vgrow="ALWAYS"/>
-                <HBox styleClass="pagination-container" spacing="10">
-                    <Button text="Previous" onAction="#handlePreviousPage"/>
-                    <Label fx:id="pageInfoLabel"/>
-                    <Button text="Next" onAction="#handleNextPage"/>
+
+                <HBox styleClass="pagination-container" spacing="10" alignment="CENTER">
+                    <Button fx:id="previousPageButton" text="◀ Previous" onAction="#handlePreviousPage"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="pageInfoLabel" text="Page 1 of 1"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="nextPageButton" text="Next ▶" onAction="#handleNextPage"/>
+                </HBox>
+
+                <HBox spacing="5" alignment="CENTER">
+                    <Button text="View Details">
+                        <tooltip>
+                            <Tooltip text="Double-click an alert to view details"/>
+                        </tooltip>
+                    </Button>
+                    <Button text="Show on Map">
+                        <tooltip>
+                            <Tooltip text="Double-click an alert to focus on map"/>
+                        </tooltip>
+                    </Button>
                 </HBox>
             </VBox>
         </SplitPane>
     </center>
 
-    <!-- Status Bar -->
+    <!-- Bottom Status and Stats -->
     <bottom>
-        <HBox styleClass="status-bar" spacing="10" alignment="CENTER_LEFT">
-            <padding>
-                <Insets top="5" right="5" bottom="5" left="5"/>
-            </padding>
-            <Label fx:id="statusLabel" text="Ready"/>
-            <ProgressBar fx:id="progressBar" progress="0" visible="false" prefWidth="150"/>
-            <Label fx:id="lastUpdatedLabel" styleClass="timestamp"/>
-        </HBox>
-    </bottom>
+        <VBox spacing="10" style="-fx-background-color: #f8f9fa; -fx-padding: 10;">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label fx:id="statusLabel" text="Ready"/>
+                <ProgressBar fx:id="progressBar" prefWidth="200" visible="false"/>
+                <Label fx:id="lastUpdatedLabel"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="dbStatusLabel" text="● DB Status"/>
+            </HBox>
 
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <VBox spacing="2" style="-fx-background-color: white; -fx-padding: 8; -fx-border-color: #dee2e6;">
+                    <Label text="Alert Counts"/>
+                    <HBox spacing="15">
+                        <VBox alignment="CENTER" spacing="2">
+                            <Label text="Critical"/>
+                            <Label fx:id="criticalCountLabel" text="0"/>
+                        </VBox>
+                        <VBox alignment="CENTER" spacing="2">
+                            <Label text="High"/>
+                            <Label fx:id="highCountLabel" text="0"/>
+                        </VBox>
+                        <VBox alignment="CENTER" spacing="2">
+                            <Label text="Medium"/>
+                            <Label fx:id="mediumCountLabel" text="0"/>
+                        </VBox>
+                        <VBox alignment="CENTER" spacing="2">
+                            <Label text="Low"/>
+                            <Label fx:id="lowCountLabel" text="0"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <VBox spacing="2" style="-fx-background-color: white; -fx-padding: 8; -fx-border-color: #dee2e6;">
+                    <Label text="Summary"/>
+                    <Label fx:id="summaryTotalLabel" text="Total: 0"/>
+                    <Label fx:id="summaryRecentLabel" text="Recent (24h): 0"/>
+                </VBox>
+
+                <VBox spacing="2" style="-fx-background-color: white; -fx-padding: 8; -fx-border-color: #dee2e6;">
+                    <Label text="Latest Activity"/>
+                    <Label fx:id="latestActivityLabel" text="No recent alerts" wrapText="true" maxWidth="200"/>
+                </VBox>
+
+                <StackPane alignment="CENTER">
+                    <ProgressIndicator fx:id="statsLoadingIndicator" prefWidth="20" prefHeight="20" visible="false"/>
+                </StackPane>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <VBox spacing="5" alignment="CENTER">
+                    <Label text="Quick Actions"/>
+                    <HBox spacing="5">
+                        <Button text="Show Stats" onAction="#showDetailedStats">
+                            <tooltip><Tooltip text="Show detailed statistics"/></tooltip>
+                        </Button>
+                        <Button text="Export Alerts" onAction="#exportAlerts">
+                            <tooltip><Tooltip text="Export alerts to CSV"/></tooltip>
+                        </Button>
+                        <Button text="Refresh All" onAction="#handleRefreshWithStats">
+                            <tooltip><Tooltip text="Refresh all data"/></tooltip>
+                        </Button>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </bottom>
 </BorderPane>
