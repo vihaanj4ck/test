@@ -1,14 +1,16 @@
-package java.view;
+package view;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
+import model.Alert;
 
-// Use your own Alert class, not javafx.scene.control.Alert
-import model.Alert; // Update this import based on your package
+import java.util.List;
 
 public class AlertCard {
     private final ListView<Alert> alertList = new ListView<>();
@@ -18,10 +20,14 @@ public class AlertCard {
     private final ComboBox<String> severityFilter = new ComboBox<>();
     private final TextField searchField = new TextField();
 
+    private final ObservableList<Alert> masterList = FXCollections.observableArrayList();
+    private final FilteredList<Alert> filteredAlerts = new FilteredList<>(masterList);
+
     public AlertCard() {
         initializeUI();
         setupCellFactory();
         configureFilters();
+        alertList.setItems(filteredAlerts);
     }
 
     private void initializeUI() {
@@ -88,15 +94,29 @@ public class AlertCard {
         severityFilter.setPromptText("Filter by severity");
 
         searchField.setPromptText("Search alerts...");
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
-            // Implement search logic here
-        });
+
+        // Filter logic on severity and search text
+        severityFilter.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
 
         filterBar.setSpacing(10);
         filterBar.getChildren().addAll(
                 new Label("Filter:"), severityFilter,
                 new Label("Search:"), searchField
         );
+    }
+
+    private void applyFilters() {
+        String severity = severityFilter.getValue();
+        String search = searchField.getText().toLowerCase();
+
+        filteredAlerts.setPredicate(alert -> {
+            boolean matchesSeverity = severity.equals("All") || alert.getModality().equalsIgnoreCase(severity);
+            boolean matchesSearch = alert.getType().toLowerCase().contains(search) ||
+                    alert.getLocation().toLowerCase().contains(search) ||
+                    alert.getModality().toLowerCase().contains(search);
+            return matchesSeverity && matchesSearch;
+        });
     }
 
     private Color getSeverityColor(String severity) {
@@ -127,10 +147,14 @@ public class AlertCard {
     }
 
     public void addAlert(Alert alert) {
-        alertList.getItems().add(alert);
+        masterList.add(alert);
     }
 
     public void clearAlerts() {
-        alertList.getItems().clear();
+        masterList.clear();
+    }
+
+    public void setAlerts(List<Alert> alerts) {
+        masterList.setAll(alerts);
     }
 }

@@ -1,4 +1,4 @@
-package java.dao;
+package dao;
 
 import model.DisasterZone;
 import utils.DBConnector;
@@ -6,13 +6,15 @@ import utils.DBConnector;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import utils.DBConnector;
 
 public class ZoneDAO {
 
     // CREATE
     public void addZone(DisasterZone zone) {
         String sql = "INSERT INTO zones (zone_id, location, type, coordinates) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DBConnector.getConnection();
+        DBConnector DBConnector = null;
+        try (Connection conn = utils.DBConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, zone.getZoneId());
             stmt.setString(2, zone.getLocation());

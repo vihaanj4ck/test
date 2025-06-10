@@ -1,0 +1,110 @@
+    /* styles.css */
+
+    /* Toolbar */
+    .main-toolbar {
+        -fx-background-color: #2c3e50;
+        -fx-padding: 8 12 8 12;
+    }
+
+    .main-toolbar .button {
+        -fx-text-fill: white;
+        -fx-font-weight: bold;
+        -fx-background-color: transparent;
+    }
+
+    .main-toolbar .button:hover {
+        -fx-background-color: #34495e;
+    }
+
+    /* Separator */
+    .separator {
+        -fx-background-color: #ecf0f1;
+    }
+
+    /* Labels */
+    .section-header {
+        -fx-font-size: 18px;
+        -fx-font-weight: bold;
+        -fx-padding: 0 0 10 0;
+    }
+
+    .status-bar {
+        -fx-background-color: #ecf0f1;
+        -fx-padding: 5;
+    }
+
+    .status-bar .label {
+        -fx-font-size: 14px;
+    }
+
+    /* Timestamp label */
+    .timestamp {
+        -fx-text-fill: #7f8c8d;
+        -fx-font-style: italic;
+        -fx-font-size: 12px;
+    }
+
+    /* Alert List */
+    .alert-list-container {
+        -fx-padding: 10;
+        -fx-background-color: #f8f9fa;
+    }
+
+    .alert-list-view {
+        -fx-background-color: white;
+        -fx-border-color: #bdc3c7;
+        -fx-border-width: 1;
+    }
+
+    /* Buttons in Pagination */
+    .pagination-container .button {
+        -fx-background-color: #3498db;
+        -fx-text-fill: white;
+        -fx-font-weight: bold;
+        -fx-padding: 6 12 6 12;
+        -fx-background-radius: 4;
+    }
+
+    .pagination-container .button:hover {
+        -fx-background-color: #2980b9;
+    }
+
+    /* Split Pane styling */
+    .main-split-pane {
+        -fx-background-color: white;
+    }
+
+    /* Map container */
+    .map-pane {
+        -fx-background-color: #ecf0f1;
+    }
+
+    /* Progress Indicator */
+    .progress-indicator {
+        -fx-progress-color: #3498db;
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+        -fx-accent: #3498db;
+    }
+
+    /* TextField */
+    .text-field {
+        -fx-background-radius: 4;
+        -fx-border-radius: 4;
+        -fx-border-color: #bdc3c7;
+        -fx-padding: 5;
+    }
+
+    /* ComboBox */
+    .combo-box {
+        -fx-background-radius: 4;
+        -fx-border-radius: 4;
+        -fx-border-color: #bdc3c7;
+    }
+
+    /* Button */
+    .button {
+        -fx-cursor: hand;
+    }

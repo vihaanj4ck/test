@@ -1,59 +1,79 @@
-package java.model;
-
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
-
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
+package model;
 
 import java.time.LocalDateTime;
 
 public class Alert {
-    private final StringProperty alertId;
-    private final StringProperty type;
-    private final StringProperty location;
-    private final StringProperty severity;
-    private final LocalDateTime timestamp;
+    private String alertId;
+    private String type;
+    private String location;
+    private LocalDateTime timestamp;
+    private String severity;
+    private String userId;
+    private String description;
+    private Double latitude;
+    private Double longitude;
 
-    public Alert(String alertId, String type, String location,
-                 LocalDateTime timestamp, String severity, String testUserId) {
-        this.alertId = new SimpleStringProperty(alertId);
-        this.type = new SimpleStringProperty(type);
-        this.location = new SimpleStringProperty(location);
+    public Alert(String alertId, String type, String location, LocalDateTime timestamp,
+                 String severity, String userId, Double latitude, Double longitude, String description){
+        this.alertId = alertId;
+        this.type = type;
+        this.location = location;
         this.timestamp = timestamp;
-        this.severity = new SimpleStringProperty(severity);
+        this.severity = severity;
+        this.userId = userId;
+        this.description = description;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    // Getters
-    public String getAlertId() { return alertId.get(); }
-    public String getType() { return type.get(); }
-    public String getLocation() { return location.get(); }
-    public LocalDateTime getTimestamp() { return timestamp; }
-    public String getSeverity() { return severity.get(); }
+    // Getters and Setters
+    public String getAlertId() { return alertId; }
+    public void setAlertId(String alertId) { this.alertId = alertId; }
 
-    // Setters
-    public void setSeverity(String severity) { this.severity.set(severity); }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+
+    public String getSeverity() { return severity; }
+    public void setSeverity(String severity) { this.severity = severity; }
+
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    // Change here: use Double, not double
+    public Double getLatitude() { return latitude; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
+
+    public Double getLongitude() { return longitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
+
+    private String modality;
 
     public String getModality() {
-        return severity.get(); // Using the actual property value
+        return modality;
     }
 
-    public String getUserId() {
-        return ""; // You can implement this when needed
+    public void setModality(String modality) {
+        this.modality = modality;
     }
 
-    // Property accessors
-    public ObservableValue<String> alertIdProperty() {
+    public String alertIdProperty() {
         return alertId;
     }
 
-    public ObservableValue<String> typeProperty() {
+    public String typeProperty() {
         return type;
     }
 
-    public ObservableValue<String> severityProperty() {
+    public String severityProperty() {
         return severity;
     }
 }

@@ -1,9 +1,10 @@
-package java.xjaw;
+package xjaw;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -11,48 +12,69 @@ import javafx.stage.Stage;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Minimal scene with label
-            Scene scene = new Scene(new Label("Hello, JavaFX!"), 800, 600);
+            // Debug: Print classpath and resource paths
+            System.out.println("Classpath: " + System.getProperty("java.class.path"));
+            System.out.println("Attempting to load FXML from: " +
+                    Objects.requireNonNull(getClass().getResource("/view/main-view.fxml")));
 
-            // Add CSS if available
-            if (getClass().getResource("/styles.css") != null) {
-                scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            // Load FXML UI
+            FXMLLoader loader = new FXMLLoader(
+                    Objects.requireNonNull(getClass().getResource("/view/main-view.fxml"))
+            );
+            Parent root = loader.load();
+
+            // Create scene from FXML root
+            Scene scene = new Scene(root);
+
+            // Load CSS stylesheet
+            String cssPath = "/styles.css";
+            if (getClass().getResource(cssPath) != null) {
+                scene.getStylesheets().add(
+                        Objects.requireNonNull(getClass().getResource(cssPath)).toExternalForm()
+                );
+                System.out.println("Successfully loaded CSS: " + cssPath);
+            } else {
+                System.err.println("CSS file not found: " + cssPath);
             }
 
+            // Set scene to stage
             primaryStage.setScene(scene);
             primaryStage.setTitle("Disaster Alert System - v1.0");
             primaryStage.setMinWidth(1024);
             primaryStage.setMinHeight(768);
             primaryStage.setMaximized(true);
 
-            // Load all available icons
+            // Load and set application icons
             loadApplicationIcons(primaryStage);
 
+            // Show the stage (window)
             primaryStage.show();
 
         } catch (Exception e) {
             e.printStackTrace();
             showErrorDialog("Application failed to initialize", e);
+            System.exit(1); // Force exit if startup fails
         }
     }
 
     private void loadApplicationIcons(Stage primaryStage) {
         List<String> iconPaths = List.of(
-                "/icons/floppydisk.jpg",    // Save icon
-                "/icons/magnifying.jpg",    // Search icon
-                "/icons/person.jpg",        // User icon
-                "/icons/refresh.jpg", // Refresh icon
-                "/icons/trashbin.jpg"       // Delete icon
+                "/icons/floppydisk.jpg",  // Corrected path (no /view prefix)
+                "/icons/magnifying.jpg",
+                "/icons/person.jpg",
+                "/icons/refresh.jpg",
+                "/icons/trashbin.jpg"
         );
 
         List<Image> loadedIcons = new ArrayList<>();
-
+    
         for (String path : iconPaths) {
             try (InputStream iconStream = getClass().getResourceAsStream(path)) {
                 if (iconStream != null) {
@@ -65,13 +87,14 @@ public class MainApp extends Application {
                     }
                 } else {
                     System.err.println("Icon not found at path: " + path);
+                    // Debug: Print full resource URL attempt
+                    System.err.println("Full resource URL: " + getClass().getResource(path));
                 }
             } catch (Exception e) {
                 System.err.println("Error loading icon from " + path + ": " + e.getMessage());
             }
         }
 
-        // Set the first successfully loaded icon as application icon
         if (!loadedIcons.isEmpty()) {
             primaryStage.getIcons().addAll(loadedIcons);
             System.out.println("Set " + loadedIcons.size() + " application icons");
@@ -80,24 +103,11 @@ public class MainApp extends Application {
         }
     }
 
-    public static void main(String[] args) {
-        // Better font rendering settings
-        System.setProperty("prism.lcdtext", "false");
-        System.setProperty("prism.text", "t2k");
-
-        // Additional JavaFX performance tweaks
-        System.setProperty("javafx.animation.fullspeed", "true");
-        System.setProperty("javafx.pulseLogger", "false");
-
-        launch(args);
-    }
-
     private void showErrorDialog(String message, Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Startup Error");
         alert.setHeaderText(message);
 
-        // Create expandable Exception content
         TextArea textArea = new TextArea(e.toString());
         textArea.setEditable(false);
         textArea.setWrapText(true);
@@ -107,5 +117,19 @@ public class MainApp extends Application {
         alert.getDialogPane().setExpanded(true);
 
         alert.showAndWait();
+    }
+
+    public static void main(String[] args) {
+        // JavaFX performance tweaks
+        System.setProperty("prism.lcdtext", "false");
+        System.setProperty("prism.text", "t2k");
+        System.setProperty("javafx.animation.fullspeed", "true");
+        System.setProperty("javafx.pulseLogger", "false");
+
+        // Additional fixes for resource loading
+        System.setProperty("javafx.verbose", "true");
+        System.setProperty("javafx.preloader", "none");
+
+        launch(args);
     }
 }
