@@ -1,4 +1,4 @@
-# 🌍 Disaster Management and Rapid Alert System
+# 🌍 Disaster Tracking and Rapid Alert System
 
 An intelligent desktop application built using **JavaFX** and **MySQL**, designed to provide real-time disaster alerts, manage affected zones, and support emergency response through an intuitive dashboard and mapping tools.
 
