@@ -17,6 +17,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebView;
 import model.Alert;
+import service.AlertService;
+import service.SMSService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -61,46 +63,24 @@ public class MainController {
     private int totalPages = 1;
     private static final int PAGE_SIZE = 10;
     private boolean mapInitialized = false;
+    // Initialize services in your controller
+    private final AlertService alertService;
+    private final SMSService smsService;
 
-    @FXML
-    private void handleAddAlert(ActionEvent event) {
-        try {
-            String type = typeField.getText().trim();
-            String location = locationField.getText().trim();
-            String severity = severityCombo.getValue();
-            String description = descriptionField.getText().trim();
-            double latitude = Double.parseDouble(latitudeField.getText().trim());
-            double longitude = Double.parseDouble(longitudeField.getText().trim());
-            String userId = "USER001"; // You can make this dynamic later
+    public MainController() {
+        this.alertDAO = new AlertDAO(); // Your existing DAO
+        this.alertService = new AlertService(alertDAO);
+        this.smsService = new SMSService();
+    }
 
-            String alertId = "ALERT_" + System.currentTimeMillis(); // Unique ID
-
-            Alert alert = new Alert(
-                    alertId,
-                    type,
-                    location,
-                    LocalDateTime.now(),
-                    severity,
-                    userId,
-                    latitude,
-                    longitude,
-                    description
-            );
-
-            AlertDAO alertDAO = new AlertDAO();
-            boolean success = alertDAO.insertAlert(alert);
-
-            if (success) {
-                System.out.println("✅ Alert added successfully.");
-                loadAlerts(); // Must reload alerts from DB to ListView
-            } else {
-                System.out.println("❌ Failed to insert alert.");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("⚠️ Error occurred while adding alert: " + e.getMessage());
-        }
+    private void showSuccessAlert(String message) {
+        Platform.runLater(() -> {
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
 
 
@@ -1179,5 +1159,8 @@ public class MainController {
     }
 
     public void handleRefreshWithStats(ActionEvent actionEvent) {
+    }
+
+    public void handleDialogClose(DialogEvent dialogEvent) {
     }
 }

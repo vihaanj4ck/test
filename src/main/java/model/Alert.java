@@ -3,6 +3,7 @@ package model;
 import java.time.LocalDateTime;
 
 public class Alert {
+    public static Object AlertType;
     private String alertId;
     private String type;
     private String location;
@@ -24,6 +25,9 @@ public class Alert {
         this.description = description;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public Alert(String alertId, String type, String location, LocalDateTime now, String severity, String userId, String description, Double latitude, Double longitude) {
     }
 
     // Getters and Setters
@@ -75,5 +79,17 @@ public class Alert {
 
     public String severityProperty() {
         return severity;
+    }
+
+    public void setTitle(String success) {
+    }
+
+    public void setHeaderText(Object o) {
+    }
+
+    public void setContentText(String message) {
+    }
+
+    public void showAndWait() {
     }
 }

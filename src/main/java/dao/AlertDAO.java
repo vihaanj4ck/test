@@ -78,4 +78,8 @@ public class AlertDAO {
             return false;
         }
     }
+
+    public int executeUpdate(String sql, String alertId) {
+        return 0;
+    }
 }
