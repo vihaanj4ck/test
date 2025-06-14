@@ -19,7 +19,7 @@
                 <graphic>
                     <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@icons/floppydisk.jpg"/>
+                            <Image url="@icons/alert.jpg"/>
                         </image>
                     </ImageView>
                 </graphic>
@@ -38,12 +38,8 @@
             <Separator orientation="VERTICAL"/>
 
             <Label text="Search:"/>
-            <TextField fx:id="searchField" promptText="Type to search..." onKeyReleased="#handleSearch" onAction="#handleSearch"/>
+            <TextField fx:id="searchField" promptText="Type to search..." onKeyReleased="#handleSearch"/>
             <ComboBox fx:id="severityFilter" promptText="Filter by severity" onAction="#handleFilterChange"/>
-
-            <!-- New Description Field -->
-            <Label text="Description:"/>
-            <TextField fx:id="descriptionField" promptText="Enter alert description..."/>
         </ToolBar>
     </top>
 
@@ -79,19 +75,6 @@
                     <Label fx:id="pageInfoLabel" text="Page 1 of 1"/>
                     <Region HBox.hgrow="ALWAYS"/>
                     <Button fx:id="nextPageButton" text="Next ▶" onAction="#handleNextPage"/>
-                </HBox>
-
-                <HBox spacing="5" alignment="CENTER">
-                    <Button text="View Details">
-                        <tooltip>
-                            <Tooltip text="Double-click an alert to view details"/>
-                        </tooltip>
-                    </Button>
-                    <Button text="Show on Map">
-                        <tooltip>
-                            <Tooltip text="Double-click an alert to focus on map"/>
-                        </tooltip>
-                    </Button>
                 </HBox>
             </VBox>
         </SplitPane>
@@ -141,28 +124,48 @@
                     <Label text="Latest Activity"/>
                     <Label fx:id="latestActivityLabel" text="No recent alerts" wrapText="true" maxWidth="200"/>
                 </VBox>
-
-                <StackPane alignment="CENTER">
-                    <ProgressIndicator fx:id="statsLoadingIndicator" prefWidth="20" prefHeight="20" visible="false"/>
-                </StackPane>
-
-                <Region HBox.hgrow="ALWAYS"/>
-
-                <VBox spacing="5" alignment="CENTER">
-                    <Label text="Quick Actions"/>
-                    <HBox spacing="5">
-                        <Button text="Show Stats" onAction="#showDetailedStats">
-                            <tooltip><Tooltip text="Show detailed statistics"/></tooltip>
-                        </Button>
-                        <Button text="Export Alerts" onAction="#exportAlerts">
-                            <tooltip><Tooltip text="Export alerts to CSV"/></tooltip>
-                        </Button>
-                        <Button text="Refresh All" onAction="#handleRefreshWithStats">
-                            <tooltip><Tooltip text="Refresh all data"/></tooltip>
-                        </Button>
-                    </HBox>
-                </VBox>
             </HBox>
         </VBox>
     </bottom>
+
+    <!-- Hidden Alert Creation Dialog -->
+    <fx:define>
+        <Dialog fx:id="alertDialog" title="New Alert">
+            <dialogPane>
+                <DialogPane>
+                    <content>
+                        <GridPane hgap="10" vgap="10">
+                            <!-- Row 0 -->
+                            <Label text="Type:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                            <TextField fx:id="typeField" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="3"/>
+
+                            <!-- Row 1 -->
+                            <Label text="Location:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                            <TextField fx:id="locationField" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="3"/>
+
+                            <!-- Row 2 -->
+                            <Label text="Latitude:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                            <TextField fx:id="latitudeField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                            <Label text="Longitude:" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                            <TextField fx:id="longitudeField" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+                            <!-- Row 3 -->
+                            <Label text="Severity:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                            <ComboBox fx:id="severityCombo" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="3"/>
+
+                            <!-- Row 4 -->
+                            <Label text="Description:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                            <TextField fx:id="descriptionField" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.columnSpan="3"/>
+                        </GridPane>
+                    </content>
+
+                    <buttonTypes>
+                        <ButtonType text="Create" buttonData="OK_DONE"/>
+                        <ButtonType text="Cancel" buttonData="CANCEL_CLOSE"/>
+                    </buttonTypes>
+                </DialogPane>
+            </dialogPane>
+        </Dialog>
+    </fx:define>
 </BorderPane>
